@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASFM - YouTube cutter and Downloader</title>
+        <style>
+
+            *:focus {
+                outline: none;
+                font-family: Arial;
+            }
+
+            html,body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #header {
+                color:white;
+                text-shadow: 0px 0px 10px black;
+                font-family: arial;
+                font-weight: bold;
+                font-size: 350%;
+                font-style: italic;
+                text-align: center;
+                padding: 0;
+                margin:0;
+            }
+
+            #asfm {
+                width:30%;
+                transform:translateY(-10%);
+            }
+            
+            #header span {
+                font-size: 70%;
+                font-style: normal;
+            }
+
+            body {
+                
+                background: linear-gradient(to bottom right, rgb(155,55,255), rgb(255,55,155));
+                background-attachment:fixed;
+                background-size:100% 100%;
+            }
+
+            #box {
+                
+                width: 90%;
+                margin: auto 5%;
+                padding: 5% 0%;
+                box-sizing: border-box;
+                text-align: center;
+                background: white;
+                border-radius: 5px;
+                box-shadow: 0px 10px 30px black ;
+                
+               
+            }
+
+            #box * {
+                box-shadow: 0px 5px 15px grey;
+                margin:3%;
+            }
+
+            #url {
+                width: 90%;
+                padding: 2%;
+                border-radius: 5px;
+                border: none;
+                border-bottom: solid 2px #003cff;
+                margin-bottom: 2%;
+            }
+
+            #start, #stop {
+                padding:1%;
+                width:30%;
+                border:solid 1px black;
+                border-radius: 4px;
+            }
+
+            #download {
+                width:80%;
+                padding: 2%;
+                margin:3% auto;
+                background: rgb(20,205,10);
+                box-shadow: 0px 5px 10px green;
+                transition: all 0.5s;
+                color:white;
+                border: none;
+                border-radius: 5px;
+                font-size: large;
+            }
+            
+            #confirm {
+              height: 30%;
+              width:80%;
+              position: absolute;
+              top:35%; left:10%;
+              transform: scale(0,0);
+              transition: all .3s;
+              background: white;
+              box-shadow: 0px 3px 10px grey;
+              border-radius: 15px;
+              overflow: hidden;
+            }
+            #cMsg {
+              
+              width: 100%;
+              box-sizing: border-box;
+              margin: auto;
+              background: white;
+              padding: 10px;
+              overflow-y: scroll;
+              text-align: center;
+              position: absolute;
+              top: 40%; left: 50%;
+              transform: translate(-50%,-50%);
+            }
+            #cb1, #cb2 {
+              margin: 0px;
+              box-sizing: border-box;
+              height: 20%;
+              width: 50%;
+              position: absolute;
+              bottom: 0;
+              background: white;
+              border: solid 1px lightgrey;
+              
+            }
+            #cb1{
+              right:0;
+            }
+            #cb2 {
+              left:0;
+            }
+        </style>
+
+
+        <script>
+
+
+            function setTime(ev,el) {
+                var v = ev.key;
+                
+                var r = /^\d{1,2}:\d{1,2}$/;
+
+                if(el.value.length==5 && ev.keyCode!=8) { return ev.preventDefault(); }
+                
+                var r = /[\d:]/;
+                if(!r.test(v) && ev.keyCode!=8){
+                        ev.preventDefault();    
+                }
+
+            }
+
+            function submit(){
+                var start = $("start").value;
+                var stop = $("stop").value;
+                var url = $("url").value;
+
+                if(!(start&&stop)) {
+                    return download(url);
+                }
+
+                var r = /^[0-5]?[0-9]:[0-5]?[0-9]$/;
+
+                if(!r.test(start)||!r.test(stop)) {
+                    return alert("Invalid start or stop time, it should be in MM:SS format");
+                }
+
+                start = getSeconds(start);
+                stop = getSeconds(stop); 
+
+                if(stop<start) {
+                    return alert("End time cannot be less than start time");
+                }
+
+                download(url,start,stop);
+                console.log(start+":"+stop);
+
+            }
+
+            function getSeconds(t){
+                var m = parseInt(t.split(":")[0]);
+                var s = parseInt(t.split(":")[1]);
+
+                var res = (m*60)+s;
+                return res; 
+            }
+
+            function download(url,start,end){
+                $("download").innerHTML = "Processing...";
+                blinkDownload();
+                $("download").disabled = true;
+                url = encodeURIComponent(url);
+
+                url = "https://asfmyt.herokuapp.com/"+url+"/"+start+"/"+end;
+               
+ 
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function(){
+                    if(this.readyState==4 && this.status ==200){
+                        var res = this.responseText;
+                        var r = /^result\d+.mp4$/i;
+                        if(r.test(res)){
+                            tryDownload(res);
+                        }
+                        else {
+                            alert("something went wrong");
+                            $("download").disabled = false;
+                            $("download").innerHTML="Download";
+                           
+                        }
+                    }
+                };
+
+                xhttp.open("GET",url);
+                xhttp.send();
+
+            }
+
+            function tryDownload(fname){
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.onreadystatechange = function(){
+                    if(this.status ==200 && this.readyState ==4){
+                        var res = this.responseText.trim();
+                        if(res=="done") {
+                            var url="https://asfmyt.herokuapp.com/download/"+fname;
+
+                            confirm('chose the link to download from','direct link','proxy link',
+                            function(){
+                              window.location.href=url;
+                            },
+                            function(){
+                               prompt("copy this url and browse it with proxy",url);
+                            });
+
+                            $("download").disabled=false;
+                            $("download").innerHTML="Download";
+                            
+                        }
+                        else {
+                            setTimeout(function(){
+                                tryDownload(fname);
+                            },3000);
+                        }
+                    }
+                    if(this.status ==404 && this.readyState ==4){
+                        setTimeout(function(){
+                                tryDownload(fname);
+                            },2000);
+                    }
+                };
+                xhttp.open("GET","https://asfmyt.herokuapp.com/status/"+fname);
+                xhttp.send();
+            }
+
+            function blinkDownload(){
+                if($("download").innerHTML!="Download"){
+                    $("download").style.color="rgba(255,255,255,0.2)";
+                    setTimeout(function(){
+                        $("download").style.color="white";
+                     },500);
+                    setTimeout(blinkDownload,1000);
+                }
+            } 
+
+            function $(id) {
+                return document.getElementById(id);
+            }
+            window.onerror = function(e){ alert (e);};
+        
+        function confirm(msg,b1,b2,ok,notok) {
+          $("confirm").style.transform="scale(1,1)";
+          
+          $('cMsg').innerHTML=msg;
+          $("cb1").innerHTML=b1;
+          $("cb2").innerHTML=b2;
+          
+          $("cb1").onclick = function(){ ok(); $('confirm').style.transform='scale(0,0)'; };
+          $("cb2").onclick = function(){ notok(); $('confirm').style.transform='scale(0,0)'; };
+        
+          
+        }
+        
+       
+       
+        </script>
+
+
+    </head>
+    <body>
+      <div id="confirm">
+        <div id="cMsg"></div>
+        <button id="cb1"></button><!--
+        --><button id="cb2"></button>
+      </div>
+      
+        <div id="header"><img src="asfm_wide.png"> <br><span>Youtube Cutter and Downloader</span></div>
+        <div id="box">
+            <input type="url" id="url" placeholder="Enter youtube url"/>
+            <input type="text" id="start" placeholder="start MM:SS" onkeydown="setTime(event,this)" >
+            <input type="text" id="stop" placeholder="stop MM:SS" onkeydown="setTime(event,this)">
+            <br>
+            <button onclick="submit()" id="download">Download</button>
+
+        </div>
+        <script src="../remove.js"></script>
+    </body>
+</html>

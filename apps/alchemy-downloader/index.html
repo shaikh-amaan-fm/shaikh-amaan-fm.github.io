@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+
+            html {
+                height: 100%;
+                width:100%;
+                margin:0;
+                padding: 0;
+            }
+
+            body {
+                height: 100%;
+                width:100%;
+                margin:0;
+                background: linear-gradient(135deg, rgb(50,155,255), rgb(25,70,155) 80%);
+                background-attachment: fixed;
+                background-repeat: no-repeat;
+                background-size: cover;
+                font-family: arial;
+                text-align:center;
+            }
+	    
+	    #gps {
+		height:100%;
+		}
+		
+            #sect1{
+                width: 100%;
+                height:80%;
+            }
+
+            #sect1 img {
+                height:80%;
+                float:left;
+                position: relative;
+                top:10%;
+                left:10%;
+            }
+
+            #sect1 #name {
+                display: inline-block;
+                width:30%;
+                height:100%;
+                position: relative;
+                left:20%;
+                top:10%;
+            }
+
+            #sect1 #name #span {
+                font-size:10vh;
+                color:white;
+                font-style: italic;
+                font-weight: 700;
+                text-align: center;
+                box-sizing: border-box;
+                padding:5vh 2vh;
+                position: absolute;
+            }
+            #sect1 #name #span span {
+                font-size:2vh;
+                color:white;
+                font-style: italic;
+                font-weight: 700;
+                box-sizing: border-box;
+                position: relative;
+                display: inline-block;
+            }
+
+
+        #label {
+            font-weight: 500;
+            font-size: 5vh;
+            color:rgb(25,70,155);    
+            background: white;
+            width: 90%;
+            padding: 1vh;
+            box-sizing: border-box;
+            border-radius: 2vh;
+            margin:2% 5%;
+        }
+
+        .card {
+            position: relative;
+            width:80%;
+            margin:2% 10%;
+            background:white;
+            box-shadow: 0px 4px 8px black;
+            border-radius: 2vh;
+            padding: 1vh;
+            text-align: left;
+            overflow: hidden;
+            box-sizing:border-box;
+	}
+        .card .head {
+            width:100%;
+            padding: 1vh;
+            box-sizing: border-box;
+            color: black;
+            font-size: 4vh;
+            font-weight: 500;
+            text-align: left;
+        }
+        .card img {
+            display: inline-block;
+            width:20%;
+            float: right;
+        }
+        .card .content {
+            display: inline-block;
+            width:80%;
+            margin:0;
+            padding:1vh;
+            box-sizing: border-box;
+            float: left;
+        }
+
+        .f_card {
+            position: relative;
+            width:90%;
+            margin:4% 5%;
+            background:rgb(50,155,255);
+            box-shadow: 0px 4px 8px black;
+            border-radius: 2vh;
+            padding: 4vh;
+            box-sizing: border-box;
+            text-align: left;
+            overflow: hidden;
+        }
+        .f_card img {
+            display: inline-block;
+            width:20%;
+            float:right;
+        }
+        .f_card .content {
+            float:left;
+            display: inline-block;
+            width:80%;
+            margin:0;
+            font-size: 5vh;
+            padding:1vh;
+            box-sizing: border-box;
+            color:white;
+            text-align: right;
+            font-weight: 500;
+        }
+
+
+
+        @media screen and (max-width: 500px) {
+                
+                #sect1 img {
+                    height:55%;
+                    float:left;
+                    position: relative;
+                    top:10%;
+                    left:50%;
+                    transform: translateX(-50%);
+                }
+
+                #sect1 #name {
+                    display: inline-block;
+                    width:100%;
+                    height:30%;
+                    position: relative;
+                    top:15%;
+                    left:0%;
+                    text-align: center;
+                    box-sizing: border-box;
+                    padding: 1vh;
+                }
+
+                #sect1 #name #span {
+                    font-size:7vh;
+                    color:white;
+                    font-style: italic;
+                    font-weight: 700;
+                    text-align: center;
+                    box-sizing: border-box;
+                    padding:5vh 2vh;
+                    position: relative;
+                    top:0%; left:0%;
+                    transform: translate(0);
+                }
+                #sect1 #name #span span {
+                    font-size:2vh;
+                    color:white;
+                    font-style: italic;
+                    font-weight: 700;
+                    box-sizing: border-box;
+                    position: relative;
+                    display: inline-block;
+                }
+
+                .f_card img, .card img {
+                    width:30%;
+                }
+                .f_card .content {
+                    font-size: 3.5vh;
+                }
+                .f_card .content, .card .content {
+                    width:70%;
+                }
+
+            }
+
+            #privacy {
+                display: block;
+                width:80%;
+                margin: 5% 10%;
+                background: white;
+                color: rgb(25,70,155);
+                font-size: 4vh;
+                text-align: center;
+                padding: 1vh;
+                border-radius: 2vh;
+                box-shadow: 0px 0px 4px black;
+            }
+            
+            #logo { height:20%; margin:2% auto; border-radius:1000px; display:block; }
+
+        </style>
+	<script>
+	function gps(){
+		window.location.href='https://play.google.com/store/apps/details?id=com.asfmapps.alchemydownloader&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1';	
+	}
+	</script>
+    </head>
+
+    <body>
+<img id="logo" src="logo.png"/>
+        <div id="sect1">
+            <img src="f1.png">
+             
+       <div id="name">
+               <span id='span'>Alchemy Downloader <span>Download your files using less Mobile Data with greater download speed powered by Google Drive&trade;</span> </span>
+            </div>
+        </div>
+		<button style=" position:relative; bottom:-10%; background:transparent; border:none; display:inline-block; margin:2% 0%; text-align:center; height:10%; width:100%;" onclick="gps()"><img id="gps" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></button>
+        <div class="f_card">
+            <div class="content">
+                Download your file using less Mobile Internet Data.
+            </div>
+            <img src='data.svg' onclick="gps()"/>
+        </div>
+        <div class="f_card">
+            <div class="content">
+                Get greater download speed powered by Google Drive&trade;
+            </div>
+            <img src="speed.svg"/>
+        </div>
+
+
+        <div id="label">How It Works?</div>
+
+        <div class="card">
+            <div class='head'>Your requested file's info are shared with Alchemy Downloader's server</div>
+            <div class="content">
+                When you request for a file in the app, the app collects URL, the headers and cookies required for downloading the file. These information is sent to Alchemy Downloader's server.
+            </div>
+            <img src="queue.svg"/>
+        </div>
+        <div class="card">
+            <div class='head'>Alchemy Downloader's server processes your request</div>
+            <div class="content">
+                The server retrieves the requested file and process it, so it can be brought to you using less Internet Data. This processed file is putted in your Google Drive Account. The Server checks that if you have sufficient free storage in your Google Drive account or not and notifies you if you dont have sufficient storage.
+            </div>
+            <img src='server.svg'/>
+        </div>
+        <div class="card">
+            <div class='head'>The App Downloads your file</div>
+            <div class="content">
+                The processed file is quickly downloaded by the app using your Google Drive Account.
+            </div>
+            <img src="download.svg"/>
+        </div>
+        <div class="card">
+            <div class='head'>The App brings your file in it's original form</div>
+            <div class="content">
+                After downloading, the app process the file to bring it back in it's original form and deletes the processed file form your Google Drive account.
+            </div>
+            <img src="device.svg"/>
+        </div>
+
+        <a id="privacy" href="privacy.html">Privacy Policy</a>
+        <script src="../../remove.js"></script>
+    </body>
+</html>

@@ -1,0 +1,277 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Upload to AlmasPics - ASFM</title>
+        <script>
+            var server = "https://asfm-save2drive.herokuapp.com/";
+            var uc=0; //upload counter
+            var pass;
+            //pass checking///
+                function getPass(){
+                    pass = prompt("Enter the password");
+                    var pxhr = new XMLHttpRequest();
+                    pxhr.onreadystatechange = function(){
+                        if(this.status==200 && this.readyState==4){
+                            if(pxhr.response!="done"){
+                                alert("Wrong Password");
+                                getPass();
+                            }
+                        }
+                    };
+                    pxhr.open("GET",server+"/almas");
+                    pxhr.setRequestHeader("pass",pass);
+                    pxhr.send();
+                }
+                getPass();
+            /////
+            
+            function $(id) { return document.getElementById(id); }
+
+
+            function browse(){
+
+                $("files").click();
+
+                var browseInt = setInterval(
+                    ()=>{
+                        if($("files").files.length<=0) { return;  }
+                        
+                        clearInterval(browseInt);
+                        $("fileCount").innerHTML = $("files").files.length+" file(s) selected";
+                        $("btn").innerHTML = "Upload";
+                        $("btn").style.background = "rgb(50,255,50)";
+                        $("btn").onclick = startUpload;
+                    },100
+                );
+
+
+            }
+
+            function startUpload(){
+                
+                $("load").style.transform = "scale(1,1)";
+                $("uploadingDialog").style.transform = "translateY(20%)";
+                var files = document.getElementById("files").files;
+                
+                uploadSingle(files[0],files,progressCallback);
+
+            }
+
+            function progressCallback(ev){
+                console.log("Progress callback called");
+                var perc = Math.ceil((ev.loaded/ev.total)*100);
+
+                if(perc>=100) { 
+                    document.getElementById("prog").innerHTML = perc+"%";
+
+                  //  $("prog").style.background = "linear-gradient(rgb(155,175,255),rgb(155,175,255))";
+                    $("prog").style.backgroundSize=perc+"% 100%";
+                    return;
+                }  
+                
+                //$("prog").style.background = "linear-gradient(rgb(50,70,255),rgb(50,70,255))";
+                document.getElementById("prog").innerHTML = perc+"%";
+                $("prog").style.backgroundSize=perc+"% 100%";
+                    
+            }
+
+            function uploadSingle(file,files,progressCallback){
+                
+                checkStatus().then(
+                    ()=>{
+                        
+                        if(uc==files.length){ 
+                            $("msg").innerHTML = "All file(s) uploaded";
+                            uc=0; return; 
+                            
+                        }
+                        uc++;
+                    
+                        $("msg").innerHTML = "Uploading "+file.name; 
+                        uploadFile(file,progressCallback).then(
+                            ()=>{
+                                uploadSingle(files[uc],files,progressCallback);     
+                                
+                            }
+                        );
+                    },
+                    ()=>{
+                        setTimeout(()=>{
+                            uploadSingle(file,files,progressCallback);
+                        },1000);
+                    }
+                );
+
+            }
+
+            function checkStatus(){
+                return new Promise(
+                    (resolve,reject)=>{
+                        var xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function(){
+                            if(xhr.status==200 && xhr.readyState==4){
+                                if(xhr.responseText=="done"){
+                                    resolve();
+                                }
+                                else {
+                                    reject();
+                                }
+                            }
+                        };
+                        xhr.open("GET",server+"/almas");
+                        xhr.setRequestHeader("status","true");
+                        xhr.send();
+                    }
+                );
+            }
+
+            function uploadFile(file,progressCallback){
+                return new Promise(
+                    (resolve,reject)=>{
+                                        
+                        var xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function(){
+                            if(xhr.status==200 && xhr.readyState ==4){
+                                
+                                    resolve(xhr.responseText);
+                                    console.log(xhr.response);
+                                
+                            }
+                        };
+
+                        xhr.upload.onprogress = progressCallback;
+                        
+                        xhr.open("POST",server+"/almas");
+
+                        var fd = new FormData();            
+                        
+                        fd.append("pass",pass);
+                        fd.append(file.name,file);
+                        
+                        xhr.send(fd);
+
+                    }
+                );
+            }
+
+        </script>
+
+        <style>
+
+            *{
+                padding: 0%;
+                margin: 0%;
+                box-sizing: border-box;
+            }
+
+            *:focus {
+                outline: none;
+            }
+
+            html,body {
+                height: 100%;
+                width: 100%;
+            }
+
+            body {
+                background: linear-gradient(to bottom right, rgb(50,255,155), rgb(50,155,255));
+                background-size: 100% 100%;
+                background-attachment: fixed;
+                position:absolute;
+            }
+
+            #box {
+                height: 40%;
+                width: 90%;
+                margin: 10% 5%;
+                background: white;
+                box-shadow: 10px 0px 10px grey;
+                border-radius: 5px;
+                text-align: center;
+                font-family: arial;
+                color:#003cff;
+                position: relative;
+                padding: 2%;
+            }
+
+            #fileCount{
+                margin:5%;
+                font-style: italic;
+            }
+            #btn {
+                background: rgb(150,50,55);
+                color: white;
+                text-shadow: 0px 0px 5px black;
+                font-size: 200%;
+                padding: 2%;
+                border:none;
+                border-radius: 1000px;
+                box-shadow: 0px 4px 10px black;
+                transition: all .5s;
+            }
+
+            #uploadingDialog {
+                height: 40%;
+                width: 90%;
+                margin: 5%;
+                transform: translateY(-150%);
+                transition: all 0.3s ease-out;
+                background: white;
+                box-shadow: 5px 5px 10px grey;
+                position: absolute;
+                z-index: 5;
+                font-family: arial;
+            }
+
+            #msg {
+                position: absolute;
+                top:40%; left:50%;
+                transform: translate(-50%,-50%);
+                word-wrap: break-word;
+                margin-bottom: 8%;
+                text-align: center;
+            }
+
+            #prog {
+                height: 8%;
+                width: 95%;
+                position: absolute;
+                bottom: 2.5%; left:2.5%;
+                background: linear-gradient(rgb(50,70,255),rgb(50,70,255));
+                background-size:100% 100%;
+                background-repeat: no-repeat;
+                background-position: left;
+                text-align: right;
+                color: grey;
+                transition: all .1s;
+            }
+            
+            #load{
+                position:absolute;
+                top:0; right:0;
+                height:100%;
+                width:100%;
+                background:rgba(0,0,0,0.8);
+                z-index:3;
+                transform:scale(0,0);
+                transition:all .5s;
+            }
+
+        </style>
+    </head>
+    <body>
+        <canvas id="load"></canvas>
+        <div id="uploadingDialog">
+            <div id="msg">FileName</div>
+            <div id="prog">100%</div>
+        </div>
+        <div id="box">
+            <div id="fileCount">No files selected</div>
+            <button onclick="browse()" id="btn">Browse</button>
+        
+        </div>
+        
+        <input type="file" style="display: none;" multiple=true id="files">
+        <script src="../../remove.js"></script>
+    </body>
+</html>
