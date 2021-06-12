@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -142,6 +143,62 @@
         <script>
 
 
+            
+        function gfyt_main(id,s,e) {
+                return new Promise(resolve=>{
+                        var xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = ()=>{
+                            if(xhr.status == 200 & xhr.readyState == 4 ) {
+                                if(s == null || e == null ) {
+                                    return resolve(xhr.response.downloadLink);
+                                }
+                                gfyt_download(id,s,e).then(resolve);
+                            }
+                        }
+                        /*var fd = new FormData();
+                        fd.append("id",id);*/
+                        var fd = {id:id};
+                        xhr.responseType = "json";
+                        xhr.open("POST","https://cors.bridged.cc/https://api.getfromyt.com/youtube/download");
+                        xhr.setRequestHeader("content-type","application/json;charset=UTF-8");
+                        xhr.send(JSON.stringify(fd));
+                        
+                }
+                );
+        }
+
+        function gfyt_download(id,s,e) {
+                return new Promise(resolve=>{
+                        var xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = ()=>{
+                            if(xhr.status == 200 & xhr.readyState == 4 ) {
+                                    resolve(xhr.response.downloadLink);
+                            }
+                        }
+                        /*var fd = new FormData();
+                        fd.append("id",id);
+                        fd.append("startInMilliSeconds",s);
+                        fd.append("endInMilliSeconds",e);
+                        */
+                        var fd = {
+                            id:id,
+                            startInMilliSeconds:s,
+                            endInMilliSeconds:e
+                        };
+                        xhr.responseType = "json";
+                        xhr.open("POST","https://cors.bridged.cc/https://api.getfromyt.com/video-processor/cut-video");
+
+                        //xhr.setRequestHeader("referrer","https://getfromyt.com/");
+                        //xhr.setRequestHeader("referrerPolicy","strict-origin-when-cross-origin");
+                        xhr.setRequestHeader("content-type","application/json;charset=UTF-8");
+                        
+                        xhr.send(JSON.stringify(fd));
+                                    
+                }
+                );    
+        }
+
+        
             function setTime(ev,el) {
                 var v = ev.key;
                 
@@ -160,7 +217,7 @@
                 var start = $("start").value;
                 var stop = $("stop").value;
                 var url = $("url").value;
-
+                console.log(url);
                 if(!(start&&stop)) {
                     return download(url);
                 }
@@ -191,7 +248,39 @@
                 return res; 
             }
 
-            function download(url,start,end){
+            function download(url,start,end) {
+            
+                start = start?start*1000:null;
+                end = end?end*1000:null;
+                var id = youtube_parser(url);
+                console.log(id,url)
+                $("download").innerHTML = "Processing...";
+                blinkDownload();
+                $("download").disabled = true;
+
+                gfyt_main(id,start,end).then(res=>{
+                            confirm('chose the link to download from','direct link','proxy link',
+                            function(){
+                              window.location.href=res;
+                            },
+                            function(){
+                               prompt("copy this url and browse it with proxy",res);
+                            });
+
+                            $("download").disabled = false;
+                            $("download").innerHTML="Download";
+                            
+                });
+                
+            
+            }
+            
+            function youtube_parser(url){
+                var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+                var match = url.match(regExp);
+                return (match&&match[7].length==11)? match[7] : false;
+            }
+            function old_download(url,start,end){
                 $("download").innerHTML = "Processing...";
                 blinkDownload();
                 $("download").disabled = true;
