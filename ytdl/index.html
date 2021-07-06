@@ -250,15 +250,27 @@
 
             function download(url,start,end) {
             
-                start = start?start*1000:null;
-                end = end?end*1000:null;
+                start = start?start:null;//*1000:null;
+                end = end?end:null;//*1000:null;
                 var id = youtube_parser(url);
                 console.log(id,url)
                 $("download").innerHTML = "Processing...";
                 blinkDownload();
                 $("download").disabled = true;
-
-                gfyt_main(id,start,end).then(res=>{
+                
+                //var yturl,start,end;
+                
+                if(!start || !end) {                
+                    var open_url = `https://www.cutyt.com/home/getdownloadlink?ytUrl=${url}&selectedOption=135+bestaudio`;
+                    window.location.href = open_url;                                    
+                    return;
+                }
+                
+                var open_url = `https://www.cutyt.com/home/getdownloadlink?ytUrl=${url}&selectedOption=135+bestaudio&start=${start}&end=${end}&shouldTrim=true`;
+                window.location.href = open_url;                
+                
+                
+                /*gfyt_main(id,start,end).then(res=>{
                             confirm('chose the link to download from','direct link','proxy link',
                             function(){
                               window.location.href=res;
@@ -270,7 +282,7 @@
                             $("download").disabled = false;
                             $("download").innerHTML="Download";
                             
-                });
+                });*/
                 
             
             }
