@@ -1,0 +1,76 @@
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<script>
+
+    var maghrib,fajr;
+
+    function $(id) {
+        return document.getElementById(id);
+    }
+
+    function pickMaghrib() {
+        $("maghrib").click();
+    }
+
+    function pickFajr() {
+        $("fajr").click();
+    }
+
+    function main() {
+        maghrib = $("maghrib").value.split(":");
+        fajr = $("fajr").value.split(":");
+
+        if(maghrib == "" || fajr == "") {
+            $("res").innerHTML = "Enter Maghrib and Fajr Time";
+            return;
+        }
+
+        d1 = new Date(2021,11,17,maghrib[0],maghrib[1],0,0);
+        d2 = new Date(2021,11,18,fajr[0],fajr[1],0,0);
+        c = d2.getTime() - d1.getTime();
+        var d3 = new Date(d1.getTime()+(c/2));
+        var midnight = d3.getHours()+":"+d3.getMinutes();
+
+        $("res").innerHTML = "Isha will End on "+midnight;
+    }
+</script>
+
+<style>
+    body {
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    table {
+        margin: auto;
+        font-size: 1.3rem;
+    }
+    input {
+        background: transparent;
+        border-radius: 2vw;
+    }
+    button {
+        background: rgb(0, 151, 211);
+        color: white;
+        border: solid rgb(0, 151, 211);
+        border-radius: 2vw;
+        font-size: 1.3rem;
+    }
+    div {
+        font-size: 1.5rem;
+        color: rgb(0, 99, 138);
+        margin: 2vh;
+    }
+
+</style>
+
+<h1>Isha End Calculator</h1>
+<table>
+    <tr style="background: rgba(0, 255, 42, 0.301);"> <td>Maghrib Time:</td> <td><input type="time" placeholder="Maghrib" id="maghrib"/></td> </tr>
+    <tr style="background: rgba(2, 40, 255, 0.301);"> <td>Fajr Time:</td> <td><input type="time" placeholder="Fajr" id="fajr"/></td></tr>
+</table>
+<br>
+<button onclick="main()">Calculate</button><br>
+<div id="res"></div>
