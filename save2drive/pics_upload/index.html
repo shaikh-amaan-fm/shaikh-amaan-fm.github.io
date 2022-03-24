@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Upload to AlmasPics - ASFM</title>
+        <title>Upload to Pics - ASFM</title>
         <script>
             var server = "https://asfm-save2drive.herokuapp.com/";
             var uc=0; //upload counter
@@ -18,7 +18,7 @@
                             }
                         }
                     };
-                    pxhr.open("GET",server+"/almas");
+                    pxhr.open("GET",server+"/pics_upload");
                     pxhr.setRequestHeader("pass",pass);
                     pxhr.send();
                 }
