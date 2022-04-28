@@ -256,7 +256,7 @@ $('.js-check :checkbox').change(function () {
 window.onload = () => {
   'use strict';
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/serviceWorker.js');
+    navigator.serviceWorker.register('./serviceWorker.js');
 	navigator.serviceWorker.ready.then(function(registration) {
 	registration.periodicSync.register('exp8',{
 		minInterval: 3 * 1000
