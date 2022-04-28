@@ -25,7 +25,8 @@ self.addEventListener('fetch', function(event) {
 
   self.addEventListener("sync",async ev=>{
       console.log("Syncing in Background");
-      let res = await checkNotification();
+      console.log(ev);
+      let res = true;
       if(res) {
           console.log("New Notification found:",res);
       }
@@ -36,4 +37,5 @@ self.addEventListener('fetch', function(event) {
           console.log("Error in request",e);
       }
   });
+
   
