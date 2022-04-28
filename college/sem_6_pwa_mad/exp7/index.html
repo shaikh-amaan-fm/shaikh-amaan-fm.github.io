@@ -253,10 +253,21 @@ $('.js-check :checkbox').change(function () {
 
 <!-- PWA -->
 <script>
-	window.onload = () => {
+window.onload = () => {
   'use strict';
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('serviceWorker.js');
+    navigator.serviceWorker.register('/serviceWorker.js');
+	navigator.serviceWorker.ready.then(function(registration) {
+	registration.periodicSync.register('exp8',{
+		minInterval: 3 * 1000
+	}).then(function(periodicSyncReg) {
+		// success
+		console.log("Period sync reg success",periodicSyncReg);
+	}, function(e) {
+		// failure
+		console.warn("Error in registering sync",e);
+	})
+	});
   }
 }
 </script>
