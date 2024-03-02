@@ -1,7 +1,17 @@
 <html>
     <head>
         <script>
+            var _params = URLSearchParams(location.search);
+            var params = {};
+            for ([key,value] of params) {
+                params[key] = value;
+            }
+            if(params['version'] == "3.2") {
+                location.href = 'https://example.com';
+            }
+            else {
             location.href = "https://youtu.be/-N-8Sbl5hmY";
+            }
         </script>
     </head>
 </html>
