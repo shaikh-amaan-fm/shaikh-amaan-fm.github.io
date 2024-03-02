@@ -1,9 +1,9 @@
 <html>
     <head>
         <script>
-            var _params = URLSearchParams(location.search);
+            var _params = new URLSearchParams(location.search);
             var params = {};
-            for ([key,value] of params) {
+            for ([key,value] of _params.entries()) {
                 params[key] = value;
             }
             if(params['version'] == "3.2") {
